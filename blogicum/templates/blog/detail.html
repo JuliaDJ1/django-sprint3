@@ -1,0 +1,8 @@
+{% extends "blog/base.html" %}
+
+{% block title %}{{ post.location }} — Блогикум{% endblock %}
+
+{% block content %}
+    {% include 'includes/_post_partial.html' with post=post detail=True %}
+    <a href="{% url 'blog:index' %}" class="back-link">← Вернуться к списку постов</a>
+{% endblock %}
