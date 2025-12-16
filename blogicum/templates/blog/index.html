@@ -1,9 +1,12 @@
-{% extends "blog/base.html" %}
-
-{% block title %}Главная — Блогикум{% endblock %}
-
+{% extends "base.html" %}
+{% block title %}
+  Лента записей
+{% endblock %}
 {% block content %}
-    {% for post in posts %}
-        {% include 'includes/_post_partial.html' with post=post %}
-    {% endfor %}
+  <h1 class="mb-5">Лента записей</h1>
+  {% for post in post_list %}
+    <article class="mb-5">  
+      {% include "includes/post_card.html" %}
+    </article>   
+  {% endfor %}
 {% endblock %}
