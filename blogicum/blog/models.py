@@ -3,16 +3,18 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+MAX_LENGTH = 256
+STR_DISPLAY_LENGTH = 15
 
-class Location(models.Model):
-    name = models.CharField(
-        max_length=256,
-        verbose_name='Название места'
-    )
+
+class PublishedModel(models.Model):
     is_published = models.BooleanField(
         default=True,
         verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть публикацию.'
+        help_text=(
+            'Снимите галочку, '
+            'чтобы скрыть публикацию.'
+        )
     )
     created_at = models.DateTimeField(
         auto_now_add=True,
@@ -20,16 +22,28 @@ class Location(models.Model):
     )
 
     class Meta:
+        abstract = True
+
+
+class Location(PublishedModel):
+    name = models.CharField(
+        max_length=MAX_LENGTH,
+        verbose_name='Название места'
+    )
+
+    class Meta:
         verbose_name = 'местоположение'
         verbose_name_plural = 'Местоположения'
 
     def __str__(self):
+        if len(self.name) > STR_DISPLAY_LENGTH:
+            return self.name[:STR_DISPLAY_LENGTH] + '...'
         return self.name
 
 
-class Category(models.Model):
+class Category(PublishedModel):
     title = models.CharField(
-        max_length=256,
+        max_length=MAX_LENGTH,
         verbose_name='Заголовок'
     )
     description = models.TextField(
@@ -40,17 +54,9 @@ class Category(models.Model):
         verbose_name='Идентификатор',
         help_text=(
             'Идентификатор страницы для URL; '
-            'разрешены символы латиницы, цифры, дефис и подчёркивание.'
+            'разрешены символы латиницы, цифры, '
+            'дефис и подчёркивание.'
         )
-    )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть публикацию.'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Добавлено'
     )
 
     class Meta:
@@ -58,12 +64,14 @@ class Category(models.Model):
         verbose_name_plural = 'Категории'
 
     def __str__(self):
+        if len(self.title) > STR_DISPLAY_LENGTH:
+            return self.title[:STR_DISPLAY_LENGTH] + '...'
         return self.title
 
 
-class Post(models.Model):
+class Post(PublishedModel):
     title = models.CharField(
-        max_length=256,
+        max_length=MAX_LENGTH,
         verbose_name='Заголовок'
     )
     text = models.TextField(
@@ -72,8 +80,9 @@ class Post(models.Model):
     pub_date = models.DateTimeField(
         verbose_name='Дата и время публикации',
         help_text=(
-            'Если установить дату и время в будущем — '
-            'можно делать отложенные публикации.'
+            'Если установить дату и время '
+            'в будущем — можно делать '
+            'отложенные публикации.'
         )
     )
     author = models.ForeignKey(
@@ -95,19 +104,12 @@ class Post(models.Model):
         blank=False,  # Обязательное поле при создании
         verbose_name='Категория'
     )
-    is_published = models.BooleanField(
-        default=True,
-        verbose_name='Опубликовано',
-        help_text='Снимите галочку, чтобы скрыть публикацию.'
-    )
-    created_at = models.DateTimeField(
-        auto_now_add=True,
-        verbose_name='Добавлено'
-    )
 
     class Meta:
         verbose_name = 'публикация'
         verbose_name_plural = 'Публикации'
 
     def __str__(self):
+        if len(self.title) > STR_DISPLAY_LENGTH:
+            return self.title[:STR_DISPLAY_LENGTH] + '...'
         return self.title

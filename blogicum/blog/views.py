@@ -3,13 +3,15 @@ from django.utils import timezone
 
 from .models import Post, Category
 
+POSTS_ON_PAGE = 5
+
 
 def index(request):
     posts = Post.objects.filter(
         is_published=True,
         category__is_published=True,
         pub_date__lte=timezone.now()
-    ).order_by('-pub_date')[:5]
+    ).order_by('-pub_date')[:POSTS_ON_PAGE]
     return render(request, 'blog/index.html', {'post_list': posts})
 
 
@@ -30,10 +32,10 @@ def category_posts(request, category_slug):
                    'post_list': posts})
 
 
-def post_detail(request, pk):
+def post_detail(request, post_id):
     post = get_object_or_404(
         Post,
-        pk=pk,
+        pk=post_id,
         is_published=True,
         category__is_published=True,
         pub_date__lte=timezone.now()
